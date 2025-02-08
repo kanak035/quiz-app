@@ -12,13 +12,11 @@ const QuizPage = () => {
     handleAnswer,
     moveToNextQuestion,
   } = useQuizContext();
-
   const totalQuestions = questions.length;
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(15);
   const [skippedQuestions, setSkippedQuestions] = useState(0);
 
-  // Wrap handleNext inside useCallback to prevent unnecessary re-renders
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) {
       handleAnswer(false);
@@ -41,7 +39,7 @@ const QuizPage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, handleNext]); // ✅ Added `handleNext` to dependency array
+  }, [timeLeft, handleNext]);
 
   useEffect(() => {
     setTimeLeft(15);
