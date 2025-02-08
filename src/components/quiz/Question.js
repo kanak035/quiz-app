@@ -4,7 +4,7 @@ import { useQuizContext } from "../../context/QuizContext";
 const Question = ({ questionData }) => {
   console.log(questionData.id, "qdata");
   const { handleAnswer, currentQuestionIndex, questions } = useQuizContext();
-  const [selectedOptions, setSelectedOptions] = useState([]); 
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   if (!questionData || !questionData.description) {
     return <div className="text-center text-lg w-screen">Loading...</div>;
@@ -24,13 +24,13 @@ const Question = ({ questionData }) => {
     const correctAnswers = selectedOptions.map(
       (index) => options[index].is_correct
     );
-    handleAnswer(correctAnswers.includes(true)); 
-    setSelectedOptions([]); 
+    handleAnswer(correctAnswers.includes(true));
+    setSelectedOptions([]);
   };
 
   const handleSkipQuestion = () => {
-    handleAnswer(false); 
-    setSelectedOptions([]); 
+    handleAnswer(false);
+    setSelectedOptions([]);
   };
 
   return (
@@ -52,12 +52,11 @@ const Question = ({ questionData }) => {
             </li>
           ))
         ) : (
-          <li className="text-gray-500">No options available</li> //..
+          <li className="text-gray-500">No options available</li> //...
         )}
       </ul>
 
       <div className="mt-4 flex gap-4">
-        
         {selectedOptions.length > 0 && (
           <button
             onClick={handleNextQuestion}
