@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQuizContext } from "../context/QuizContext";
 import Question from "../components/quiz/Question";
 import { Result } from "../components/quiz/Result";
@@ -16,23 +16,23 @@ const QuizPage = () => {
   const totalQuestions = questions.length;
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(15);
-  const [skippedQuestions, setSkippedQuestions] = useState(0); 
+  const [skippedQuestions, setSkippedQuestions] = useState(0);
 
-  const handleNext = () => {
+  // Wrap handleNext inside useCallback to prevent unnecessary re-renders
+  const handleNext = useCallback(() => {
     if (selectedAnswer === null) {
-      handleAnswer(false); 
-      setSkippedQuestions((prev) => prev + 1); 
+      handleAnswer(false);
+      setSkippedQuestions((prev) => prev + 1);
     } else {
       handleAnswer(selectedAnswer);
     }
-
     setSelectedAnswer(null);
     moveToNextQuestion();
-  };
+  }, [selectedAnswer, handleAnswer, moveToNextQuestion]);
 
   useEffect(() => {
     if (timeLeft === 0) {
-      handleNext(); 
+      handleNext();
       return;
     }
 
@@ -41,7 +41,7 @@ const QuizPage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, handleNext]); // ✅ Added `handleNext` to dependency array
 
   useEffect(() => {
     setTimeLeft(15);
@@ -49,7 +49,7 @@ const QuizPage = () => {
 
   if (questions.length === 0) {
     return (
-      <div className=" w-screen flex items-center justify-center min-h-screen bg-red-100">
+      <div className="w-screen flex items-center justify-center min-h-screen bg-red-100">
         <p className="text-2xl text-gray-700 font-semibold animate-pulse">
           Loading Questions...
         </p>
@@ -90,25 +90,23 @@ const QuizPage = () => {
           onOptionSelect={handleOptionSelect}
         />
 
-        {selectedAnswer !== null && (
-          <div className="flex justify-center mt-6">
-            {currentQuestionIndex < totalQuestions - 1 ? (
-              <button
-                onClick={handleNext}
-                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-md transform hover:scale-105"
-              >
-                Next ➡
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-md transform hover:scale-105"
-              >
-                ✅ Submit
-              </button>
-            )}
-          </div>
-        )}
+        <div className="flex justify-center mt-6">
+          {currentQuestionIndex < totalQuestions - 1 ? (
+            <button
+              onClick={handleNext}
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-md transform hover:scale-105"
+            >
+              Next ➡
+            </button>
+          ) : (
+            <button
+              onClick={handleNext}
+              className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-md transform hover:scale-105"
+            >
+              ✅ Submit
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

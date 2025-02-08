@@ -37,6 +37,7 @@
   },
   "proxy": "https://api.jsonserve.com",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@tailwindcss/postcss": "^4.0.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
