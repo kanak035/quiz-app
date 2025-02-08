@@ -5,13 +5,14 @@ import { Result } from "../components/quiz/Result";
 
 const QuizPage = () => {
   const {
-    questions,
+    questions = [],
     currentQuestionIndex,
     score,
     isQuizCompleted,
     handleAnswer,
     moveToNextQuestion,
   } = useQuizContext();
+
   const totalQuestions = questions.length;
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(15);
@@ -45,7 +46,7 @@ const QuizPage = () => {
     setTimeLeft(15);
   }, [currentQuestionIndex]);
 
-  if (questions.length === 0) {
+  if (!questions || totalQuestions === 0) {
     return (
       <div className="w-screen flex items-center justify-center min-h-screen bg-red-100">
         <p className="text-2xl text-gray-700 font-semibold animate-pulse">
@@ -65,10 +66,6 @@ const QuizPage = () => {
     );
   }
 
-  const handleOptionSelect = (isCorrect) => {
-    setSelectedAnswer(isCorrect);
-  };
-
   return (
     <div className="w-screen quiz-container flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-6">
       <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-3xl">
@@ -85,26 +82,10 @@ const QuizPage = () => {
 
         <Question
           questionData={questions[currentQuestionIndex]}
-          onOptionSelect={handleOptionSelect}
+          onOptionSelect={setSelectedAnswer}
+          handleNext={handleNext}
+          isLastQuestion={currentQuestionIndex === totalQuestions - 1}
         />
-
-        <div className="flex justify-center mt-6">
-          {currentQuestionIndex < totalQuestions - 1 ? (
-            <button
-              onClick={handleNext}
-              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-md transform hover:scale-105"
-            >
-              Next ➡
-            </button>
-          ) : (
-            <button
-              onClick={handleNext}
-              className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-md transform hover:scale-105"
-            >
-              ✅ Submit
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

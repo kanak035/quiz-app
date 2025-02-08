@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useQuizContext } from "../../context/QuizContext";
 
 const Question = ({ questionData }) => {
-  console.log(questionData.id, "qdata");
   const { handleAnswer, currentQuestionIndex, questions } = useQuizContext();
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -21,11 +20,11 @@ const Question = ({ questionData }) => {
   };
 
   const handleNextQuestion = () => {
-    const correctAnswers = selectedOptions.map(
-      (index) => options[index].is_correct
+    const isCorrect = selectedOptions.some(
+      (index) => options[index]?.is_correct
     );
-    handleAnswer(correctAnswers.includes(true));
-    setSelectedOptions([]);
+    handleAnswer(isCorrect);
+    setSelectedOptions([]); // Reset selection
   };
 
   const handleSkipQuestion = () => {
@@ -37,7 +36,7 @@ const Question = ({ questionData }) => {
     <div className="question-container">
       <h2 className="text-2xl font-semibold mb-4">{description}</h2>
       <ul className="space-y-2">
-        {Array.isArray(options) && options.length > 0 ? (
+        {options.length > 0 ? (
           options.map((option, index) => (
             <li
               key={index}
@@ -52,7 +51,7 @@ const Question = ({ questionData }) => {
             </li>
           ))
         ) : (
-          <li className="text-gray-500">No options available</li> //...
+          <li className="text-gray-500">No options available</li>
         )}
       </ul>
 
